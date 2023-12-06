@@ -12,6 +12,7 @@ const sequelize = new Sequelize({
 const User = sequelize.define("users", {
     id: {
       type: DataTypes.NUMBER,
+      primaryKey: true
     },
     email: {
       type: DataTypes.STRING,

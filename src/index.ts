@@ -84,7 +84,13 @@ app.post('/api/auth/local/register', async (req, res) => {
 })
 
 app.post('/api/auth/local', (req, res) => {
+    // chercher un utilisateur avec cette email dans la bdd
+    // chercher un utilisateur avec ce password dans la bdd
+    // si mdp ou email incorrect 
+        res.status(400).json({message: "email ou mot de passe incorrect"})
+
     res.send('Connection en cours')
+
 })
 
 app.get('/api/users/me', (req, res) => {

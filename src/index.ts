@@ -2,8 +2,7 @@ import express from "express";
 import 'dotenv/config';
 import cors from "cors";
 import bodyParser from "body-parser";
-import { DataTypes, Sequelize } from "sequelize";
-import { cp } from "fs";
+import { DataTypes, Sequelize, where } from "sequelize";
 import bcrypt from 'bcrypt';
 
 const saltRounds = 10;
@@ -60,18 +59,28 @@ const port = process.env.PORT ? parseInt(process.env.PORT as string) : 1992
 
 
 app.post('/api/auth/local/register', async (req, res) => {
+    // récupérer l'email de l'utilisateur dans la requête
     const myPlaintextPassword =  req.body.password;
-    const hash = await bcrypt.hash(myPlaintextPassword, saltRounds);
-    const newUser = await User.create({
-        email: req.body.email,
-        password: hash
-    })
-
-    const userData = newUser.dataValues
-
-    delete userData.password
-
-    res.json(newUser)
+    // chercher un utilisateur avec cette email dans la bdd
+    const mailResearch = await User.findOne({ where: { email: req.body.email } });
+    // Si la requête renvoie un utilisateur avec cet email
+    if (mailResearch !== null) {
+        // => erreur : déjà existant
+        res.status(400).json({message: "utilsateur déjà utilisé"})
+    }
+    else {
+        // hash du mot de passe
+        const hash = await bcrypt.hash(myPlaintextPassword, saltRounds);
+        // new user
+        const newUser = await User.create({
+            email: req.body.email,
+            password: hash
+        })
+        // repond avec le nouvel utilisateur sans le mot de passe (même hashé)
+        const userData = newUser.dataValues
+        delete userData.password
+        res.json(newUser)
+    }
 })
 
 app.post('/api/auth/local', (req, res) => {

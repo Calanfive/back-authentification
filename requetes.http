@@ -2,7 +2,7 @@ POST http://localhost:1992/api/auth/local/register
 content-type: application/json
 
 {
-    "username": "bobhjghghby",
+    "username": "bobby,",
     "email": "test@test.com",
     "password": "bobbypassword"
 }
@@ -138,7 +138,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzAxNzc0Mjk5LCJleHAiOjE3MDQzNjYyOTl9.WZ1C3YJH1X5VvEEFpmNBRiYKwuG08Z-PQ0GKqcaq_GQ
 
 ###
-PUT http://localhost:1992/api/official-games/1
+PUT http://localhost:1992/api/official-games/2
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzAxNzc0Mjk5LCJleHAiOjE3MDQzNjYyOTl9.WZ1C3YJH1X5VvEEFpmNBRiYKwuG08Z-PQ0GKqcaq_GQ
 

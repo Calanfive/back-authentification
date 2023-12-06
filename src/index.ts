@@ -100,7 +100,7 @@ app.post('/api/auth/local', async (req, res) => {
     }
 
     else {
-        const tokenGiven = jwt.sign({ data: 'foobar'}, process.env.JWT_SECRET!, { expiresIn: '1h' });
+        const tokenGiven = jwt.sign({ data: {id: userWithEmail.dataValues.id }}, process.env.JWT_SECRET!, { expiresIn: '1h',  });
         let result = {
             user : userWithEmail,
             jwt : tokenGiven

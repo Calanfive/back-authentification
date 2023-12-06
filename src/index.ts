@@ -64,10 +64,12 @@ const port = process.env.PORT ? parseInt(process.env.PORT as string) : 1992
 // const myPlaintextPassword = 's0/\/\P4$$w0rD';
 // const hash = await bcrypt.hash(myPlaintextPassword, saltRounds);
 
-app.post('/api/auth/local/register', (req, res) => {
-    id: req.body.id,
-    email: req.body.email,
-    password: req.body.password
+app.post('/api/auth/local/register', async (req, res) => {
+    const newUser = await User.create({
+        id: req.body.nom,
+        email: req.body.email,
+        password: req.body.password
+    })
     res.send('Utilisateur créé')
 })
 

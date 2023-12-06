@@ -83,11 +83,11 @@ GET http://localhost:1992/api/free-games
 Content-Type: application/json
 
 ###
-GET http://localhost:1992/api/free-games/2
+GET http://localhost:1992/api/free-games/1
 Content-Type: application/json
 
 ###
-PUT http://localhost:1992/api/free-games/2
+PUT http://localhost:1992/api/free-games/1
 Content-Type: application/json
 
 {
@@ -100,7 +100,7 @@ Content-Type: application/json
 }
 ###
 
-DELETE  http://localhost:1992/api/free-games/3
+DELETE  http://localhost:1992/api/free-games/1
 Content-Type: application/json
 
 {
@@ -153,7 +153,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxN
 }
 ###
 
-DELETE  http://localhost:1992/api/official-games
+DELETE  http://localhost:1992/api/official-games/1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzAxNzc0Mjk5LCJleHAiOjE3MDQzNjYyOTl9.WZ1C3YJH1X5VvEEFpmNBRiYKwuG08Z-PQ0GKqcaq_GQ
 

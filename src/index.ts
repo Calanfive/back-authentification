@@ -3,6 +3,7 @@ import 'dotenv/config';
 import cors from "cors";
 import bodyParser from "body-parser";
 import { DataTypes, Sequelize } from "sequelize";
+import { cp } from "fs";
 // import bcrypt from 'bcrypt';
 
 const sequelize = new Sequelize({
@@ -78,54 +79,88 @@ app.get('/api/auth/change-password', (req, res) => {
     res.send('mot de passe modifié')
 })
 
-app.post('/api/free-games', (req, res) => {
-    res.send('nouveau jeu gratuit ajouté')
+// Routes de communication FreeGame
+app.post('/api/free-games', async (req, res) => {
+    const newFreeGame = await FreeGame.create({
+        nom: req.body.data.nom,
+        description: req.body.data.description,
+        image: req.body.data.image
+    })
+    console.log('nouveau jeu gratuit ajouté');
+    res.json(newFreeGame)
 })
 
-app.get('/api/free-games', (req, res) => {
-    res.send('jeux gratuits')
+app.get('/api/free-games', async (req, res) => {
+    const allFreeGames = await FreeGame.findAll();
+    res.json(allFreeGames)
 })
 
-app.get('/api/free-games/:id', (req, res) => {
-    res.send('sélection jeu gratuit par id')
+app.get('/api/free-games/:id', async (req, res) => {
+    const gameSelectById = req.params.id
+    const freeGameById = await FreeGame.findByPk(gameSelectById);
+    res.json(freeGameById)
 })
 
-app.put('/api/free-games/:id', (req, res) => {
-    res.send('modif jeu gratuit après sélection par id')
+app.put('/api/free-games/:id', async (req, res) => {
+    const gameSelectById = req.params.id
+    const modifGameById = await FreeGame.findByPk(gameSelectById);
+    const modified = await modifGameById?.update({
+        nom: req.body.data.nom,
+        description: req.body.data.description,
+        image: req.body.data.image
+    })
+    res.json(modified)
 })
 
-app.delete('/api/free-games/:id', (req, res) => {
-    res.send('supression jeu gratuit après sélection par id')
+app.delete('/api/free-games/:id', async (req, res) => {
+    const gameSelectById = req.params.id
+    const deleteGameById = await FreeGame.findByPk(gameSelectById);
+    deleteGameById?.destroy()
+
+    res.send('supression jeu gratuit via sélection id')
 })
 
-app.post('/api/official-games', (req, res) => {
-    res.send('nouveau jeu payant ajouté')
+// Routes de communication OfficialGame
+app.post('/api/official-games', async (req, res) => {
+    const newGame = await OfficialGame.create({
+        nom: req.body.data.nom,
+        description: req.body.data.description,
+        image: req.body.data.image,
+        prix: req.body.data.prix
+    })
+    res.json(newGame)
 })
 
-app.get('/api/official-games', (req, res) => {
-    res.send('jeux payants')
+app.get('/api/official-games', async (req, res) => {
+    const allOffGames = await OfficialGame.findAll();
+    res.json(allOffGames)
 })
 
-app.get('/api/official-games/:id', (req, res) => {
-    res.send('sélection jeu payant par id')
+app.get('/api/official-games/:id', async (req, res) => {
+    const gameSelectById = req.params.id
+    const offGameById = await OfficialGame.findByPk(gameSelectById);
+    res.json(offGameById)
 })
 
-
-app.put('/api/official-games/:id', (req, res) => {
-    res.send('modif jeu payant après sélection par id')
+app.put('/api/official-games/:id', async (req, res) => {
+    const gameSelectById = req.params.id
+    const modifGameById = await OfficialGame.findByPk(gameSelectById);
+    const modified = await modifGameById?.update({
+        nom: req.body.data.nom,
+        description: req.body.data.description,
+        image: req.body.data.image,
+        prix: req.body.data.prix
+    })
+    res.json(modified)
 })
 
-app.delete('/api/official-games/:id', (req, res) => {
-    res.send('supression jeu payant après sélection par id')
+app.delete('/api/official-games/:id', async (req, res) => {
+    const gameSelectById = req.params.id
+    const deleteGameById = await OfficialGame.findByPk(gameSelectById);
+    deleteGameById?.destroy()
+
+    res.send('supression jeu payant via sélection id')
 })
-
-
-
-
-
-
-
-
 
 app.listen(port, () => {
     console.log('serveur running on port : ' + port);

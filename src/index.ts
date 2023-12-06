@@ -4,6 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { DataTypes, Sequelize, where } from "sequelize";
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const saltRounds = 10;
 
@@ -83,13 +84,30 @@ app.post('/api/auth/local/register', async (req, res) => {
     }
 })
 
-app.post('/api/auth/local', (req, res) => {
-    // chercher un utilisateur avec cette email dans la bdd
-    // chercher un utilisateur avec ce password dans la bdd
-    // si mdp ou email incorrect 
-        res.status(400).json({message: "email ou mot de passe incorrect"})
+app.post('/api/auth/local', async (req, res) => {
 
-    res.send('Connection en cours')
+    // chercher un utilisateur avec cette email dans la bdd
+    const userWithEmail = await User.findOne({ where: { email: req.body.identifier } });
+    // récupérer le mdp de l'utilisateur dans la requête
+    const myPlaintextPassword =  req.body.password;
+    console.log("userWithEmail", userWithEmail);
+    // chercher un utilisateur avec ce password dans la bdd
+    const match = await bcrypt.compare(myPlaintextPassword, userWithEmail?.dataValues.password);
+    delete userWithEmail?.dataValues.password
+    // si mdp ou email incorrect 
+    if (userWithEmail === null || !match) {
+        res.status(400).json({message: "email ou mot de passe incorrect"})
+    }
+
+    else {
+        const tokenGiven = jwt.sign({ data: 'foobar'}, process.env.JWT_SECRET!, { expiresIn: '1h' });
+        let result = {
+            user : userWithEmail,
+            jwt : tokenGiven
+        };
+
+        res.json(result)
+    }
 
 })
 

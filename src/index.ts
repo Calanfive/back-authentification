@@ -33,9 +33,6 @@ const FreeGame = sequelize.define("free-games", {
     },
     image: {
       type: DataTypes.STRING,
-    },
-    prix: {
-      type: DataTypes.STRING
     }
   })
 
@@ -49,9 +46,13 @@ const OfficialGame = sequelize.define("official-games", {
       image: {
         type: DataTypes.STRING,
       },
+      prix: {
+        type: DataTypes.STRING
+      }
   })
 
 sequelize.sync();
+// sequelize.sync({ force: true });
 
 const app = express();
 app.use(cors());
@@ -64,6 +65,9 @@ const port = process.env.PORT ? parseInt(process.env.PORT as string) : 1992
 // const hash = await bcrypt.hash(myPlaintextPassword, saltRounds);
 
 app.post('/api/auth/local/register', (req, res) => {
+    id: req.body.id,
+    email: req.body.email,
+    password: req.body.password
     res.send('Utilisateur créé')
 })
 

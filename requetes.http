@@ -87,7 +87,7 @@ GET http://localhost:1992/api/free-games/2
 Content-Type: application/json
 
 ###
-PUT http://localhost:1992/api/free-games/3
+PUT http://localhost:1992/api/free-games/2
 Content-Type: application/json
 
 {

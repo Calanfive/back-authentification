@@ -4,7 +4,9 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { DataTypes, Sequelize } from "sequelize";
 import { cp } from "fs";
-// import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
+
+const saltRounds = 10;
 
 const sequelize = new Sequelize({
   dialect: "sqlite",
@@ -12,10 +14,6 @@ const sequelize = new Sequelize({
 })
 
 const User = sequelize.define("users", {
-    id: {
-      type: DataTypes.NUMBER,
-      primaryKey: true
-    },
     email: {
       type: DataTypes.STRING,
     },
@@ -39,16 +37,16 @@ const FreeGame = sequelize.define("free-games", {
 const OfficialGame = sequelize.define("official-games", {
     nom: {
         type: DataTypes.STRING,
-      },
-      description: {
+    },
+    description: {
         type: DataTypes.STRING,
-      },
-      image: {
+    },
+    image: {
         type: DataTypes.STRING,
-      },
-      prix: {
+    },
+    prix: {
         type: DataTypes.STRING
-      }
+    }
   })
 
 sequelize.sync();
@@ -60,17 +58,20 @@ app.use(bodyParser.json());
 
 const port = process.env.PORT ? parseInt(process.env.PORT as string) : 1992
 
-// const saltRounds = 10;
-// const myPlaintextPassword = 's0/\/\P4$$w0rD';
-// const hash = await bcrypt.hash(myPlaintextPassword, saltRounds);
 
 app.post('/api/auth/local/register', async (req, res) => {
+    const myPlaintextPassword =  req.body.password;
+    const hash = await bcrypt.hash(myPlaintextPassword, saltRounds);
     const newUser = await User.create({
-        id: req.body.nom,
         email: req.body.email,
-        password: req.body.password
+        password: hash
     })
-    res.send('Utilisateur créé')
+
+    const userData = newUser.dataValues
+
+    delete userData.password
+
+    res.json(newUser)
 })
 
 app.post('/api/auth/local', (req, res) => {

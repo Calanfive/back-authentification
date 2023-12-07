@@ -150,8 +150,32 @@ app.get('/api/users/me', middleware, async (req, res) => {
     res.json(user?.dataValues)
 })
 
-app.get('/api/auth/change-password', (req, res) => {
-    res.send('mot de passe modifié')
+app.post('/api/auth/change-password', middleware, async (req, res) => {
+    const { currentPassword, passwordConfirmation, password } = req.body;
+    if (passwordConfirmation !== password) {
+        res.status(400).send("New passwords do not match");
+    }
+    else if(passwordConfirmation.length < 8){
+        res.status(400).send("New password must be at least 6 characters long")
+    }
+    else {
+        const decoded = jwt.decode(req.token!) as {id: number};
+        const user = await User.findOne({ where : {id: decoded.id}})
+        if (user) {
+            const isPasswordCorrect = await bcrypt.compare(currentPassword, user.dataValues.password);
+            if (isPasswordCorrect) {
+                const hashedPassword = await bcrypt.hash(passwordConfirmation, saltRounds);
+                await user.update({ password: hashedPassword });
+                res.send("mot de passe modifié");
+            }
+            else {
+                res.status(400).send("Current password is incorrect");
+            }
+        }
+        else {
+            res.status(404).send("User not found");
+        }
+    }
 })
 
 // Routes de communication FreeGame

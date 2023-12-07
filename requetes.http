@@ -44,13 +44,12 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzAxOTU0
 ###
 POST http://localhost:1992/api/auth/change-password
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzAxNzc0Mjk5LCJleHAiOjE3MDQzNjYyOTl9.WZ1C3YJH1X5VvEEFpmNBRiYKwuG08Z-PQ0GKqcaq_GQ
-
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzAxOTU0NDM1LCJleHAiOjE3MDE5NTgwMzV9.-W-WZU2tXlgIe3HdcTV6wZ2YAe2XZEK3NB7OisSBwZU
 
 {
     "currentPassword": "bobbypassword",
-    "password": "bobbypassword2",
-    "passwordConfirmation": "bobbypassword2"
+    "password": "bobbypassword3",
+    "passwordConfirmation": "bobbypassword3"
 }
 
 ###

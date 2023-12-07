@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import { DataTypes, Sequelize, where } from "sequelize";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { log } from "console";
 
 const saltRounds = 10;
 
@@ -47,10 +48,33 @@ const OfficialGame = sequelize.define("official-games", {
     prix: {
         type: DataTypes.STRING
     }
-  })
+})
 
 sequelize.sync();
 // sequelize.sync({ force: true });
+
+const middleware = (req: any, res: any, next: any) => {
+
+    const fullToken = req.headers.authorization;
+    if (!fullToken) {
+        res.status(401).send("Token non fourni");
+    }
+    else {
+        const token = fullToken.replace("Bearer ", "");
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!)
+
+        if(decoded){
+            req.token = token
+            req.user 
+            next();
+            console.log("Token validé");
+            
+        }
+        else {
+            res.status(401).send("Mauvais token");
+        }
+  }
+}
 
 const app = express();
 app.use(cors());
@@ -94,13 +118,15 @@ app.post('/api/auth/local', async (req, res) => {
     // chercher un utilisateur avec ce password dans la bdd
     const match = await bcrypt.compare(myPlaintextPassword, userWithEmail?.dataValues.password);
     delete userWithEmail?.dataValues.password
+    delete userWithEmail?.dataValues.createdAt
+    delete userWithEmail?.dataValues.updatedAt
     // si mdp ou email incorrect 
     if (userWithEmail === null || !match) {
         res.status(400).json({message: "email ou mot de passe incorrect"})
     }
 
     else {
-        const tokenGiven = jwt.sign({ data: {id: userWithEmail.dataValues.id }}, process.env.JWT_SECRET!, { expiresIn: '1h',  });
+        const tokenGiven = jwt.sign({id: userWithEmail.dataValues.id }, process.env.JWT_SECRET!, { expiresIn: '1h',  });
         let result = {
             user : userWithEmail,
             jwt : tokenGiven
@@ -109,10 +135,19 @@ app.post('/api/auth/local', async (req, res) => {
         res.json(result)
     }
 
+
 })
 
-app.get('/api/users/me', (req, res) => {
-    res.send('JWT reçu')
+app.get('/api/users/me', middleware, async (req, res) => {
+
+    const decoded = jwt.decode(req.token!) as {id: number};
+    const user = await User.findOne({ where: {id: decoded.id } });
+    
+    delete user?.dataValues.password
+    delete user?.dataValues.createdAt
+    delete user?.dataValues.updatedAt
+
+    res.json(user?.dataValues)
 })
 
 app.get('/api/auth/change-password', (req, res) => {
@@ -161,7 +196,7 @@ app.delete('/api/free-games/:id', async (req, res) => {
 })
 
 // Routes de communication OfficialGame
-app.post('/api/official-games', async (req, res) => {
+app.post('/api/official-games', middleware, async (req, res) => {
     const newGame = await OfficialGame.create({
         nom: req.body.data.nom,
         description: req.body.data.description,
@@ -171,18 +206,18 @@ app.post('/api/official-games', async (req, res) => {
     res.json(newGame)
 })
 
-app.get('/api/official-games', async (req, res) => {
+app.get('/api/official-games', middleware, async (req, res) => {
     const allOffGames = await OfficialGame.findAll();
     res.json(allOffGames)
 })
 
-app.get('/api/official-games/:id', async (req, res) => {
+app.get('/api/official-games/:id', middleware, async (req, res) => {
     const gameSelectById = req.params.id
     const offGameById = await OfficialGame.findByPk(gameSelectById);
     res.json(offGameById)
 })
 
-app.put('/api/official-games/:id', async (req, res) => {
+app.put('/api/official-games/:id', middleware, async (req, res) => {
     const gameSelectById = req.params.id
     const modifGameById = await OfficialGame.findByPk(gameSelectById);
     const modified = await modifGameById?.update({
@@ -194,7 +229,7 @@ app.put('/api/official-games/:id', async (req, res) => {
     res.json(modified)
 })
 
-app.delete('/api/official-games/:id', async (req, res) => {
+app.delete('/api/official-games/:id', middleware, async (req, res) => {
     const gameSelectById = req.params.id
     const deleteGameById = await OfficialGame.findByPk(gameSelectById);
     deleteGameById?.destroy()

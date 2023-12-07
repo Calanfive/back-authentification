@@ -38,12 +38,14 @@ content-type: application/json
 
 ###
 GET http://localhost:1992/api/users/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzAxNzc0Mjk5LCJleHAiOjE3MDQzNjYyOTl9.WZ1C3YJH1X5VvEEFpmNBRiYKwuG08Z-PQ0GKqcaq_GQ
+content-type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzAxOTU0NDM1LCJleHAiOjE3MDE5NTgwMzV9.-W-WZU2tXlgIe3HdcTV6wZ2YAe2XZEK3NB7OisSBwZU
 
 ###
 POST http://localhost:1992/api/auth/change-password
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzAxNzc0Mjk5LCJleHAiOjE3MDQzNjYyOTl9.WZ1C3YJH1X5VvEEFpmNBRiYKwuG08Z-PQ0GKqcaq_GQ
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzAxNzc0Mjk5LCJleHAiOjE3MDQzNjYyOTl9.WZ1C3YJH1X5VvEEFpmNBRiYKwuG08Z-PQ0GKqcaq_GQ
+
 
 {
     "currentPassword": "bobbypassword",
@@ -130,7 +132,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxN
 ###
 GET http://localhost:1992/api/official-games
 Content-Type: application/json
-Authorization: Bearer 15afca93d64beb0012dc6e1b56d8a472640e06d397c8562adf2193d5612a0608ea4b42f2b8155d9e66003793f8a2751ff8ea7636c66ef24136ee83df0fe97f0d17cc07f8291638ece6711151d1c0c480ad7a3cbe0a9b96517a1e7310e86207a4a98f46662788be83f8451a5be017a15bd792a7bc11f5563efc1b96ebba4a821c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzAxOTU0NDM1LCJleHAiOjE3MDE5NTgwMzV9.-W-WZU2tXlgIe3HdcTV6wZ2YAe2XZEK3NB7OisSBwZU
 
 ###
 GET http://localhost:1992/api/official-games/1
